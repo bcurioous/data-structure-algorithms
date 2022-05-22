@@ -1,4 +1,4 @@
-// O(n log n)
+// O(n log n), where n = arr1 and m = arr2
 
 function findDuplicates(arr1, arr2) {
   let source;
