@@ -4,7 +4,7 @@ function binarySearch(items, key) {
 
   while (start !== end) {
     const mid = Math.round((start + end) / 2);
-      console.log(start, " :: ", mid, " :: ", end);
+    console.log(start, " :: ", mid, " :: ", end);
 
     if (key === items[start]) {
       return start;
@@ -27,8 +27,11 @@ function binarySearch(items, key) {
   return -1;
 }
 
-let list = [1, 3, 5, 7, 9, 10, 14, 19];
-let key = 14;
+// let list = [1, 3, 5, 7, 9, 10, 14, 19];
+// let key = 14;
+
+let list = [1, 2, 3, 5, 6, 7];
+let key = 3;
 
 let result = binarySearch(list, key);
 
