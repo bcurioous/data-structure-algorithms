@@ -17,14 +17,14 @@
  *     0 <= starti <= endi <= 104
  */
 
-function mergeIntervals(intevals) {
-  let merged = [];
+function mergeIntervals(intervals) {
+  let merged = intervals.length > 1 ? [] : intervals;
 
   let mergeStartMark = 0,
     mergeEndMark = -1;
   for (let i = 1; i < intervals.length; i++) {
-    const [currentStart, currentEnd] = intevals[i - 1];
-    const [nextStart, nextEnd] = intevals[i];
+    const [currentStart, currentEnd] = intervals[i - 1];
+    const [nextStart, nextEnd] = intervals[i];
     console.group("i :: ", i);
     console.log("mergeStartMark ::", mergeStartMark);
     console.log("mergeEndMark   ::", mergeEndMark);
@@ -34,19 +34,27 @@ function mergeIntervals(intevals) {
 
     if (currentEnd >= nextStart) {
       mergeEndMark = i;
-      if (i !== intevals.length - 1) {
+      if (i !== intervals.length - 1) {
         continue;
       } else {
         // if the last element
-        merged.push([intevals[mergeStartMark][0], intevals[mergeEndMark][1]]);
+        if(nextStart < currentStart){
+          merged.push([nextStart, intervals[mergeEndMark][1]]);
+        }else{
+          merged.push([intervals[mergeStartMark][0], intervals[mergeEndMark][1]]);
+        }
       }
     } else {
       // do merge
       console.log("merging");
-      merged.push([intevals[mergeStartMark][0], intevals[mergeEndMark][1]]);
+      if(mergeEndMark!=-1){
+        merged.push([intervals[mergeStartMark][0], intervals[mergeEndMark][1]]);
+      }else{
+        merged.push([currentStart, currentEnd]);
+      }
       mergeStartMark = mergeEndMark = i;
-      if (mergeEndMark === intevals.length - 1 && i === intervals.length - 1) {
-        merged.push([intevals[mergeStartMark][0], intevals[mergeEndMark][1]]);
+      if (mergeEndMark === intervals.length - 1 && i === intervals.length - 1) {
+        merged.push([intervals[mergeStartMark][0], intervals[mergeEndMark][1]]);
       }
     }
   }
@@ -54,14 +62,35 @@ function mergeIntervals(intevals) {
   return merged;
 }
 
+// const intervals = [
+//   [1, 4]
+// ];
+// const intervals = [
+//   [1, 4],
+//   [0, 4]
+// ];
+// const intervals = [
+//   [1, 4],
+//   [5, 6],
+// ];
+
 const intervals = [
-  [1, 3],
-  [2, 6],
+  [1, 2],
+  [3, 4],
+  [5,6],
   [8, 10],
   [10, 13],
   [12, 18],
   [19, 20],
 ];
+// const intervals = [
+//   [1, 3],
+//   [2, 6],
+//   [8, 10],
+//   [10, 13],
+//   [12, 18],
+//   [19, 20],
+// ];
 
 const output = mergeIntervals(intervals);
 
