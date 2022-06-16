@@ -17,72 +17,117 @@
  *     0 <= starti <= endi <= 104
  */
 
-function mergeIntervals(intervals) {
-  let merged = intervals.length > 1 ? [] : intervals;
+ function mergeIntervals(intervals) {
+  const sorted = intervals.sort((a, b) => a[0] - b[0]);
 
-  let mergeStartMark = 0,
-    mergeEndMark = -1;
-  for (let i = 1; i < intervals.length; i++) {
-    const [currentStart, currentEnd] = intervals[i - 1];
-    const [nextStart, nextEnd] = intervals[i];
-    console.group("i :: ", i);
-    console.log("mergeStartMark ::", mergeStartMark);
-    console.log("mergeEndMark   ::", mergeEndMark);
-    console.log("currentEnd     ::", currentEnd);
-    console.log("nextStart      ::", nextStart);
-    console.groupEnd();
+  console.log("sorted ::", sorted);
 
-    if (currentEnd >= nextStart) {
-      mergeEndMark = i;
-      if (i !== intervals.length - 1) {
-        continue;
-      } else {
-        // if the last element
-        if(nextStart < currentStart){
-          merged.push([nextStart, intervals[mergeEndMark][1]]);
-        }else{
-          merged.push([intervals[mergeStartMark][0], intervals[mergeEndMark][1]]);
-        }
-      }
-    } else {
-      // do merge
-      console.log("merging");
-      if(mergeEndMark!=-1){
-        merged.push([intervals[mergeStartMark][0], intervals[mergeEndMark][1]]);
-      }else{
-        merged.push([currentStart, currentEnd]);
-      }
-      mergeStartMark = mergeEndMark = i;
-      if (mergeEndMark === intervals.length - 1 && i === intervals.length - 1) {
-        merged.push([intervals[mergeStartMark][0], intervals[mergeEndMark][1]]);
-      }
+  const merged = [sorted[0]];
+  for (let i = 1; i < sorted.length; i++) {
+    const [currentStart, currentEnd] = sorted[i];
+
+    const [lastStart, lastEnd] = merged[merged.length - 1];
+
+    console.group("i--- :: ", i);
+
+    console.log("current ::", [currentStart, currentEnd]);
+    console.log("stack-last ::", [lastStart, lastEnd]);
+
+    if (
+      currentStart >= lastStart &&
+      currentStart <= lastEnd &&
+      currentEnd >= lastStart &&
+      currentEnd <= lastEnd
+    ) {
+      console.log("skip and continuing ---");
+      console.groupEnd();
+      continue;
     }
+
+    if (
+      currentStart >= lastStart &&
+      currentStart <= lastEnd &&
+      currentEnd >= lastStart &&
+      currentEnd > lastEnd
+    ) {
+      merged[merged.length - 1] = [lastStart, currentEnd];
+      console.log("merging end -- ", [lastStart, currentEnd]);
+      console.groupEnd();
+      continue;
+    }
+
+    if (
+      currentStart < lastStart &&
+      currentStart <= lastEnd &&
+      currentEnd >= lastStart &&
+      currentEnd <= lastEnd
+    ) {
+      merged[merged.length - 1] = [currentStart, lastEnd];
+      console.log("merging start -- ", [currentStart, lastEnd]);
+      console.groupEnd();
+      continue;
+    }
+    if (
+      currentStart < lastStart &&
+      currentStart <= lastEnd &&
+      currentEnd >= lastStart &&
+      currentEnd > lastEnd
+    ) {
+      merged[merged.length - 1] = [currentStart, currentEnd];
+      console.log("merging both -- ", [currentStart, currentEnd]);
+      console.groupEnd();
+      continue;
+    }
+
+    console.log("pushing :: ", [currentStart, currentEnd]);
+    merged.push([currentStart, currentEnd]);
+
+    console.groupEnd();
   }
 
   return merged;
 }
 
-// const intervals = [
+// var intervals = [
+//   [1, 4],
+//   [2, 3],
+//   [1, 2],
+//   [1, 5],
+//   [0, 2],
+//   [2, 5],
+//   [4, 7],
+// ];
+
+// var intervals = [
+//   [1, 4],
+//   [1, 5]
+// ];
+// var intervals = [
+//   [1, 6],
+//   [1, 5]
+// ];
+
+// var intervals = [
 //   [1, 4]
 // ];
-// const intervals = [
+// var intervals = [
 //   [1, 4],
 //   [0, 4]
 // ];
-// const intervals = [
+// var intervals = [
 //   [1, 4],
 //   [5, 6],
 // ];
 
-const intervals = [
-  [1, 2],
-  [3, 4],
-  [5,6],
-  [8, 10],
-  [10, 13],
-  [12, 18],
-  [19, 20],
-];
+// var intervals = [
+//   [1, 2],
+//   [3, 4],
+//   [5, 6],
+//   [8, 10],
+//   [10, 13],
+//   [12, 18],
+//   [19, 20],
+// ];
 // const intervals = [
 //   [1, 3],
 //   [2, 6],
