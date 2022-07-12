@@ -55,134 +55,107 @@
 const LOGS = process.argv[2] && process.argv[2] === "true";
 
 var maxProfit = function (prices) {
-	let i = 0,
-		j = prices.length - 1;
-
-	let front, rear;
-
-	let max = 0;
-
-	while (i < j) {
-		front = prices[i];
-		rear = prices[j];
-		LOGS &&
-			console.log(
-				"i :: ",
-				i,
-				" :: j :: ",
-				j,
-				" :: front :: ",
-				front,
-				" :: rear :: ",
-				rear
-			);
-
-		LOGS &&
-			console.log(
-				"front condition : ",
-				front > rear,
-				" :: 2nd part :: ",
-				front > prices[i + 1],
-				" :: front+1 :: ",
-				prices[i + 1]
-			);
-
-		if (front >= rear && front >= prices[i + 1]) {
-			LOGS &&
-				console.log(
-					"inc i :: front :: ",
-					front,
-					" :: next front :: ",
-					prices[i + 1],
-					" and :: rear :: ",
-					rear
-				);
-
-			i++;
-			continue;
-		}
-
-		if (rear <= front && rear <= prices[j - 1]) {
-			LOGS &&
-				console.log(
-					"dec j :: rear :: ",
-					rear,
-					" :: next rear :: ",
-					prices[j - 1],
-					" and :: rear :: ",
-					rear
-				);
-			j--;
-			continue;
-		}
-
-		if (front - rear < 0 && Math.abs(front - rear) > max) {
-			LOGS && console.log("found max :: ", Math.abs(front - rear));
-			max = Math.abs(front - rear);
-		}
-
-		if (front < rear || front === rear) {
-			i++;
-			j--;
-			if (prices[i] - front > max) {
-				max = prices[i] - front;
-			}
-			if (rear - prices[j] > max) {
-				max = rear - prices[j];
-			}
+	let max = Number.MIN_VALUE;
+	let maxSP = [];
+	for (let i = prices.length - 1; i >= 0; i--) {
+		if (prices[i] > max) {
+			max = prices[i];
+			maxSP[i] = Number.MIN_VALUE;
+		} else {
+			maxSP[i] = max;
 		}
 	}
 
-	return max;
+	LOGS && console.log("maxSP :: ", maxSP);
+	LOGS && console.log("max :: ", max);
+
+	let count = 0;
+
+	for (let i = 0; i < prices.length; i++) {
+		if (maxSP[i] !== Number.MIN_VALUE) {
+			count = Math.max(count, maxSP[i] - prices[i]);
+		}
+	}
+
+	return count;
 };
 
+//  7   1   5   3   6   4
+var maxProfit2 = function (prices) {
+	let max = Number.MIN_VALUE;
 
+	let count = 0;
+
+	for (let i = prices.length - 1; i >= 0; i--) {
+		const price = prices[i];
+
+		if (price > max) {
+			max = price;
+		} else {
+			count = Math.max(count, max - price);
+		}
+	}
+
+	return count;
+};
 
 const predicates = [
-	// {
-	//   input: [3,2,6,5,0,3],
-	//   output: 4,
-	// },
-	// {
-	//   input: [2,1,2,0,1],
-	//   output: 1,
-	// },
-	// {
-	//   input: [3, 3],
-	//   output: 0,
-	// },
-	// {
-	//   input: [2, 1, 4],
-	//   output: 3,
-	// },
-	// {
-	//   input: [1, 4, 2],
-	//   output: 3,
-	// },
+	{
+		input: [3, 3, 5, 0, 0, 3, 1, 4],
+		output: 4,
+	},
+	{
+		input: [2, 1, 2, 1, 0, 1, 2],
+		output: 2,
+	},
+	{
+		input: [3, 2, 6, 5, 0, 3],
+		output: 4,
+	},
+	{
+		input: [2, 1, 2, 0, 1],
+		output: 1,
+	},
+	{
+		input: [3, 3],
+		output: 0,
+	},
+	{
+		input: [2, 1, 4],
+		output: 3,
+	},
+	{
+		input: [1, 4, 2],
+		output: 3,
+	},
 	{
 		input: [7, 1, 5, 3, 6, 4],
 		output: 5,
 	},
-	// {
-	//   input: [7, 5, 3, 5, 4, 6, 4, 2], // buy at 3 sell it at 6 = 3 profit
-	//   output: 3,
-	// },
-	// {
-	//   input: [7, 6, 4, 3, 1],
-	//   output: 0,
-	// },
+	{
+		input: [7, 5, 3, 5, 4, 6, 4, 2], // buy at 3 sell it at 6 = 3 profit
+		output: 3,
+	},
+	{
+		input: [7, 6, 4, 3, 1],
+		output: 0,
+	},
 ];
 
 predicates.forEach((predicate) => {
-	const output = maxProfit(predicate.input);
-	console.log(
-		"input :: ",
-		predicate.input,
-		" :: output :: ",
-		output,
-		" :: exepcted :: ",
-		predicate.output,
-		" :: passed :: ",
-		predicate.output === output
-	);
+	const output = maxProfit2(predicate.input);
+
+	if (predicate.output !== output) {
+		console.log(
+			predicate.output === output,
+			" :: input :: ",
+			predicate.input,
+			" :: output :: ",
+			output,
+			" :: exepcted :: ",
+			predicate.output,
+			" :: passed :: ",
+			predicate.output === output
+		);
+	}
 });
